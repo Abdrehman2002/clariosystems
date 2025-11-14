@@ -1,31 +1,23 @@
 import Spline from '@splinetool/react-spline';
 import { Button } from './ui/button';
 import { Plus } from 'lucide-react';
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
+
+// Lazy load Spline for better performance
+const SplineScene = lazy(() => import('@splinetool/react-spline').then(module => ({ default: module.default })));
 
 export default function Hero() {
   return (
-    <section id="home" className="relative w-full min-h-screen overflow-hidden bg-black">
-      {/* Modern Grid Pattern for Mobile */}
-      <div className="absolute inset-0 md:hidden pointer-events-none">
-        <div className="absolute inset-0 opacity-30 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-      </div>
+    <section id="home" className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Mobile Background - Optimized */}
+      <div className="absolute inset-0 md:hidden bg-gradient-to-br from-purple-900/10 via-black to-cyan-900/10 pointer-events-none" />
 
-      {/* Gradient Background for Mobile */}
-      <div className="absolute inset-0 md:hidden bg-gradient-to-br from-purple-900/15 via-black to-cyan-900/15 pointer-events-none" />
-
-      {/* Animated Gradient Orbs for Mobile - Optimized */}
-      <div className="absolute inset-0 md:hidden overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl" style={{ filter: 'blur(60px)' }} />
-        <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl" style={{ filter: 'blur(60px)' }} />
-      </div>
-
-      {/* Spline 3D Background - Desktop only */}
-      <div className="hidden md:block absolute inset-0 w-full h-full" style={{ transform: 'scale(1.7) translateZ(0)', backfaceVisibility: 'hidden', willChange: 'auto' }}>
+      {/* Spline 3D Background - Desktop only with GPU acceleration */}
+      <div
+        className="spline-container hidden md:block absolute inset-0 w-full h-full scale-[1.7]"
+      >
         <Suspense fallback={<div className="w-full h-full bg-black" />}>
-          <div style={{ width: '100%', height: '100%', transform: 'translate3d(0,0,0)', isolation: 'isolate' }}>
-            <Spline scene="https://prod.spline.design/81b-Kk4hgQuuPmKy/scene.splinecode" />
-          </div>
+          <SplineScene scene="https://prod.spline.design/81b-Kk4hgQuuPmKy/scene.splinecode" />
         </Suspense>
       </div>
 
@@ -46,7 +38,7 @@ export default function Hero() {
             {/* Headline and Tags */}
             <div className="flex-1 space-y-6 md:space-y-8">
               {/* Mobile Badge */}
-              <div className="md:hidden inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/30 backdrop-blur-sm w-fit">
+              <div className="md:hidden inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/30 w-fit">
                 <div className="w-2 h-2 bg-cyan-400 rounded-full" />
                 <span className="text-xs font-semibold text-cyan-300">Transforming Ideas into Reality</span>
               </div>
@@ -76,15 +68,15 @@ export default function Hero() {
 
               {/* Mobile Stats - Enhanced */}
               <div className="md:hidden grid grid-cols-3 gap-3 pt-3">
-                <div className="text-center p-4 rounded-2xl bg-black/40 border border-cyan-400/30 backdrop-blur-sm">
+                <div className="text-center p-4 rounded-2xl bg-black/40 border border-cyan-400/30">
                   <div className="text-3xl font-black bg-gradient-to-br from-cyan-400 to-cyan-300 bg-clip-text text-transparent">50+</div>
                   <div className="text-[11px] text-cyan-300/80 mt-1.5 font-medium">Projects</div>
                 </div>
-                <div className="text-center p-4 rounded-2xl bg-black/40 border border-purple-400/30 backdrop-blur-sm">
+                <div className="text-center p-4 rounded-2xl bg-black/40 border border-purple-400/30">
                   <div className="text-3xl font-black bg-gradient-to-br from-purple-400 to-purple-300 bg-clip-text text-transparent">30+</div>
                   <div className="text-[11px] text-purple-300/80 mt-1.5 font-medium">Clients</div>
                 </div>
-                <div className="text-center p-4 rounded-2xl bg-black/40 border border-indigo-400/30 backdrop-blur-sm">
+                <div className="text-center p-4 rounded-2xl bg-black/40 border border-indigo-400/30">
                   <div className="text-3xl font-black bg-gradient-to-br from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">24/7</div>
                   <div className="text-[11px] text-indigo-300/80 mt-1.5 font-medium">Support</div>
                 </div>

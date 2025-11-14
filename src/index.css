@@ -70,21 +70,34 @@ All colors MUST be HSL.
 
   /* Optimize scrolling performance */
   section {
-    contain: layout style;
-    content-visibility: auto;
+    contain: layout;
   }
 
-  /* Reduce animations during scroll */
+  /* Smooth scroll */
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
     }
   }
 
-  /* GPU acceleration for specific elements */
-  .transform-gpu {
+  /* Critical: Spline container GPU acceleration */
+  .spline-container {
+    /* Force GPU layer - THE KEY FIX */
     transform: translateZ(0);
-    will-change: transform;
+    -webkit-transform: translateZ(0);
+
+    /* Tell browser this will change for optimization */
+    will-change: transform, opacity;
+
+    /* Prevent flickering */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    /* Isolate rendering */
+    isolation: isolate;
+
+    /* Contain paint/layout to prevent reflows */
+    contain: layout style paint;
   }
 
   /* Optimize Spline canvas rendering */
@@ -93,19 +106,11 @@ All colors MUST be HSL.
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    perspective: 1000px;
-    -webkit-perspective: 1000px;
   }
 
-  /* Spline container optimization */
+  /* Spline viewer optimization */
   spline-viewer {
     transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
-    contain: strict;
-  }
-
-  /* Reduce compositing overhead */
-  #home canvas {
-    will-change: auto;
   }
 }
