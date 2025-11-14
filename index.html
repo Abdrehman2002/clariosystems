@@ -16,10 +16,491 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@ClarioSystems" />
     <meta name="twitter:image" content="/clario-ai-logo.svg" />
+
+    <!-- n8n Chat CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+    <!-- CUSTOM CHAT THEME (CLARIO BRAND COLORS) -->
+    <style>
+      :root {
+        /* Primary Colors - Cyan Brand */
+        --chat--color--primary: #22d3ee;
+        --chat--color--primary-shade-50: #06b6d4;
+        --chat--color--primary--shade-100: #0891b2;
+
+        /* Secondary Colors - Purple */
+        --chat--color--secondary: #a855f7;
+        --chat--color-secondary-shade-50: #9333ea;
+
+        /* Background Colors */
+        --chat--color-white: #ffffff;
+        --chat--color-light: #1a1a1a;
+        --chat--color-dark: #000000;
+
+        /* Chat Dimensions */
+        --chat--window--width: 420px;
+        --chat--window--height: 650px;
+
+        /* Typography */
+        --chat--heading--font-size: 1.75rem;
+        --chat--subtitle--font-size: 1.05rem;
+
+        /* Toggle Button */
+        --chat--toggle--background: linear-gradient(135deg, #22d3ee, #a855f7);
+        --chat--toggle--hover--background: linear-gradient(135deg, #06b6d4, #9333ea);
+        --chat--toggle--active--background: linear-gradient(135deg, #0891b2, #7e22ce);
+        --chat--toggle--color: #ffffff;
+
+        /* Message Styles */
+        --chat--message--bot--background: rgba(15, 15, 15, 0.95);
+        --chat--message--bot--color: #ffffff;
+        --chat--message--bot--border: 1px solid rgba(34, 211, 238, 0.3);
+
+        --chat--message--user--background: linear-gradient(135deg, #22d3ee, #a855f7);
+        --chat--message--user--color: #ffffff;
+
+        /* Input Styles */
+        --chat--input--background: #1a1a1a;
+        --chat--input--color: #ffffff;
+        --chat--input--border: 1px solid rgba(34, 211, 238, 0.3);
+      }
+
+      /* Enhanced Chat Window */
+      #n8n-chat {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      /* Pulsating Toggle Button - Size & Glow */
+      @keyframes pulse-size-glow {
+        0%, 100% {
+          box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(168, 85, 247, 0.4);
+          transform: scale(0.95);
+        }
+        50% {
+          box-shadow: 0 0 35px rgba(34, 211, 238, 0.9), 0 0 60px rgba(168, 85, 247, 0.7), 0 0 80px rgba(34, 211, 238, 0.3);
+          transform: scale(1.08);
+        }
+      }
+
+      #n8n-chat-toggle,
+      #n8n-chat button[aria-label*="toggle"],
+      #n8n-chat > button,
+      div[id*="n8n"] > button {
+        background: linear-gradient(135deg, #22d3ee, #a855f7) !important;
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(168, 85, 247, 0.4) !important;
+        border: none !important;
+        transition: none !important;
+        animation: pulse-size-glow 2s ease-in-out infinite !important;
+        animation-play-state: running !important;
+        width: 70px !important;
+        height: 70px !important;
+        min-width: 70px !important;
+        min-height: 70px !important;
+      }
+
+      #n8n-chat-toggle:hover,
+      #n8n-chat button[aria-label*="toggle"]:hover,
+      #n8n-chat > button:hover,
+      div[id*="n8n"] > button:hover {
+        animation-play-state: paused !important;
+        box-shadow: 0 0 30px rgba(34, 211, 238, 1), 0 0 60px rgba(168, 85, 247, 0.8), 0 0 90px rgba(34, 211, 238, 0.4) !important;
+        transform: scale(1.1) !important;
+        transition: all 0.3s ease !important;
+      }
+
+      /* Chat Window Styling */
+      .chat-window {
+        background: #000000 !important;
+        border: 1px solid rgba(34, 211, 238, 0.4) !important;
+        box-shadow: 0 0 30px rgba(34, 211, 238, 0.2), 0 0 60px rgba(168, 85, 247, 0.15) !important;
+        border-radius: 16px !important;
+        backdrop-filter: blur(10px);
+      }
+
+      /* Header Styling */
+      .chat-header {
+        background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(168, 85, 247, 0.1)) !important;
+        border-bottom: 1px solid rgba(34, 211, 238, 0.3) !important;
+        padding: 20px !important;
+      }
+
+      .chat-header h1 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.75rem !important;
+      }
+
+      .chat-header p {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 1.05rem !important;
+      }
+
+      /* Compact Message Styling */
+      .chat-message-bot,
+      .chat-message-user,
+      .chat-message,
+      #n8n-chat .chat-message {
+        margin-bottom: 8px !important;
+      }
+
+      /* Messages Container */
+      .chat-messages,
+      #n8n-chat .chat-messages {
+        padding: 16px !important;
+      }
+
+      /* Bot Message Styling - Compact with Box */
+      .chat-message-bot,
+      #n8n-chat .chat-message-bot,
+      [class*="bot"] {
+        background: rgba(15, 15, 15, 0.95) !important;
+        border: 1px solid rgba(34, 211, 238, 0.3) !important;
+        color: #ffffff !important;
+        border-radius: 8px !important;
+        padding: 10px 14px !important;
+        line-height: 1.5 !important;
+        max-width: 80% !important;
+        width: fit-content !important;
+        margin-right: auto !important;
+      }
+
+      /* User Message Styling - Compact with Gradient Box */
+      .chat-message-user,
+      #n8n-chat .chat-message-user,
+      [class*="user"] {
+        background: linear-gradient(135deg, #22d3ee, #a855f7) !important;
+        color: #ffffff !important;
+        border-radius: 8px !important;
+        padding: 10px 14px !important;
+        box-shadow: 0 2px 8px rgba(34, 211, 238, 0.3) !important;
+        line-height: 1.5 !important;
+        max-width: 80% !important;
+        width: fit-content !important;
+        margin-left: auto !important;
+        text-align: left !important;
+      }
+
+      /* Ensure user text appears in boxes */
+      #n8n-chat .chat-message-user p,
+      #n8n-chat .chat-message-user span,
+      #n8n-chat .chat-message-user div {
+        color: #ffffff !important;
+      }
+
+      /* Typing Indicator Animation */
+      @keyframes typing-pulse {
+        0%, 100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .chat-typing-indicator {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 8px 12px !important;
+        background: rgba(15, 15, 15, 0.95) !important;
+        border: 1px solid rgba(34, 211, 238, 0.3) !important;
+        border-radius: 8px !important;
+        width: fit-content !important;
+      }
+
+      .chat-typing-indicator::before {
+        content: "Bot is typing" !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 13px !important;
+      }
+
+      .chat-typing-indicator::after {
+        content: "..." !important;
+        color: #22d3ee !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        animation: typing-pulse 1.5s ease-in-out infinite !important;
+      }
+
+      /* Quick Action Buttons */
+      .chat-quick-replies,
+      .chat-suggestions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        padding: 8px 16px 12px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .chat-quick-reply-button,
+      .chat-suggestion-button {
+        background: rgba(34, 211, 238, 0.1) !important;
+        border: 1px solid rgba(34, 211, 238, 0.4) !important;
+        color: #22d3ee !important;
+        padding: 8px 16px !important;
+        border-radius: 20px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: auto !important;
+        min-height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
+      }
+
+      .chat-quick-reply-button:hover,
+      .chat-suggestion-button:hover {
+        background: rgba(34, 211, 238, 0.2) !important;
+        border-color: #22d3ee !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3) !important;
+      }
+
+      /* Input Container */
+      .chat-input-container,
+      #n8n-chat .chat-input-container,
+      #n8n-chat form {
+        background: rgba(15, 15, 15, 0.95) !important;
+        border-top: 1px solid rgba(34, 211, 238, 0.3) !important;
+        padding: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        flex-wrap: nowrap !important;
+      }
+
+      /* Input Wrapper - Prevent Overlap */
+      #n8n-chat form > div,
+      #n8n-chat .chat-input-container > div {
+        flex: 1 !important;
+        min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+
+      /* Input Field - Bigger & More Visible */
+      .chat-input,
+      input[type="text"],
+      textarea,
+      #n8n-chat input[type="text"],
+      #n8n-chat textarea,
+      #n8n-chat form input {
+        background: rgba(26, 26, 26, 0.8) !important;
+        border: 1px solid rgba(34, 211, 238, 0.4) !important;
+        color: #ffffff !important;
+        border-radius: 24px !important;
+        padding: 14px 20px !important;
+        padding-right: 20px !important;
+        font-size: 15px !important;
+        min-height: 48px !important;
+        height: 48px !important;
+        max-height: 48px !important;
+        flex: 1 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .chat-input:focus,
+      input[type="text"]:focus,
+      textarea:focus {
+        border-color: #22d3ee !important;
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25) !important;
+        outline: none !important;
+        background: rgba(26, 26, 26, 0.95) !important;
+      }
+
+      .chat-input::placeholder,
+      input[type="text"]::placeholder,
+      textarea::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+      }
+
+      /* Typing Text Color */
+      .chat-input,
+      input[type="text"],
+      textarea {
+        caret-color: #22d3ee !important;
+      }
+
+      /* Send Button - Ultra Specific Targeting */
+      #n8n-chat button,
+      #n8n-chat button[type="submit"],
+      #n8n-chat form button,
+      #n8n-chat .chat-input-container button,
+      .chat-send-button,
+      button[type="submit"],
+      button.send-button {
+        background: linear-gradient(135deg, #22d3ee, #a855f7) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        max-width: 48px !important;
+        max-height: 48px !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3) !important;
+      }
+
+      #n8n-chat button:hover,
+      #n8n-chat button[type="submit"]:hover,
+      #n8n-chat form button:hover,
+      .chat-send-button:hover,
+      button[type="submit"]:hover {
+        transform: scale(1.1) !important;
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 30px rgba(168, 85, 247, 0.4) !important;
+        background: linear-gradient(135deg, #06b6d4, #9333ea) !important;
+      }
+
+      #n8n-chat button:active,
+      .chat-send-button:active {
+        transform: scale(0.95) !important;
+      }
+
+      /* Send Icon Color - Ultra Specific */
+      #n8n-chat button svg,
+      #n8n-chat button svg *,
+      #n8n-chat button path,
+      #n8n-chat button polygon,
+      #n8n-chat button circle,
+      .chat-send-button svg,
+      .chat-send-button svg * {
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
+        color: #ffffff !important;
+      }
+
+      /* Override any n8n default button styles */
+      #n8n-chat button[type="submit"] {
+        background-color: transparent !important;
+        background-image: linear-gradient(135deg, #22d3ee, #a855f7) !important;
+      }
+
+      /* Scrollbar Styling */
+      .chat-messages::-webkit-scrollbar,
+      *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      .chat-messages::-webkit-scrollbar-track,
+      *::-webkit-scrollbar-track {
+        background: rgba(15, 15, 15, 0.5);
+        border-radius: 4px;
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb,
+      *::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #22d3ee, #a855f7);
+        border-radius: 4px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+      }
+
+      .chat-messages::-webkit-scrollbar-thumb:hover,
+      *::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #06b6d4, #9333ea);
+        box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+      }
+    </style>
   </head>
 
-  <body>
+  <body style="background: #0a0f1f; color: white;">
     <div id="root"></div>
+
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- n8n Chat Script -->
+    <script type="module">
+      import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";
+
+      createChat({
+        webhookUrl: "https://yuneeb0733.app.n8n.cloud/webhook/0ebe1e64-2638-492c-9665-61c20904d26b/chat",
+        target: "#n8n-chat",
+        mode: "window",
+        showWelcomeScreen: false,
+        initialMessages: [
+          "👋 Welcome to Clario Systems!",
+          "I'm Clario Bot — here to help you with AI, automation, software, or anything else."
+        ],
+        i18n: {
+          en: {
+            title: "Clario Bot ✨",
+            subtitle: "Your AI assistant is online.",
+            inputPlaceholder: "Ask anything...",
+            getStarted: "Start New Chat"
+          }
+        },
+        enableStreaming: true,
+        showTypingIndicator: true,
+        typingIndicatorText: "Bot is typing..."
+      });
+
+      // Add Quick Action Buttons after bot messages
+      setTimeout(() => {
+        const chatContainer = document.querySelector('#n8n-chat');
+        if (chatContainer) {
+          // Listen for new messages
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              mutation.addedNodes.forEach((node) => {
+                if (node.classList && node.classList.contains('chat-message-bot')) {
+                  // Check if quick actions already added
+                  const nextSibling = node.nextElementSibling;
+                  if (!nextSibling || !nextSibling.classList.contains('chat-quick-replies')) {
+                    addQuickActions(node);
+                  }
+                }
+              });
+            });
+          });
+
+          const messagesContainer = chatContainer.querySelector('.chat-messages');
+          if (messagesContainer) {
+            observer.observe(messagesContainer, { childList: true, subtree: true });
+          }
+        }
+      }, 1000);
+
+      function addQuickActions(messageElement) {
+        const quickReplies = document.createElement('div');
+        quickReplies.className = 'chat-quick-replies';
+        quickReplies.innerHTML = `
+          <button class="chat-quick-reply-button" onclick="sendQuickReply('View Our Services')">🚀 View Our Services</button>
+          <button class="chat-quick-reply-button" onclick="sendQuickReply('Book a Demo')">📅 Book a Demo</button>
+          <button class="chat-quick-reply-button" onclick="sendQuickReply('Talk to a Specialist')">💬 Talk to a Specialist</button>
+          <button class="chat-quick-reply-button" onclick="sendQuickReply('Our Process')">⚙️ Our Process</button>
+          <button class="chat-quick-reply-button" onclick="sendQuickReply('Pricing Info')">💰 Pricing Info</button>
+        `;
+        messageElement.parentNode.insertBefore(quickReplies, messageElement.nextSibling);
+      }
+
+      window.sendQuickReply = function(message) {
+        const input = document.querySelector('#n8n-chat input[type="text"], #n8n-chat textarea');
+        const sendButton = document.querySelector('#n8n-chat button[type="submit"]');
+
+        if (input && sendButton) {
+          input.value = message;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          setTimeout(() => sendButton.click(), 100);
+        }
+      };
+    </script>
+
+    <!-- Target div for Chat -->
+    <div id="n8n-chat"></div>
+
   </body>
 </html>
+
+
