@@ -69,27 +69,43 @@ All colors MUST be HSL.
   }
 
   /* Optimize scrolling performance */
-  * {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-perspective: 1000;
-    perspective: 1000;
-  }
-
-  /* Improve rendering performance for sections */
   section {
-    will-change: transform;
-    transform: translateZ(0);
-    contain: layout style paint;
+    contain: layout style;
+    content-visibility: auto;
   }
 
-  /* GPU acceleration for animations */
-  .animate-pulse,
-  .transition-all,
-  .transition-colors,
-  .transition-transform {
-    will-change: transform, opacity;
+  /* Reduce animations during scroll */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* GPU acceleration for specific elements */
+  .transform-gpu {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Optimize Spline canvas rendering */
+  canvas {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+  }
+
+  /* Spline container optimization */
+  spline-viewer {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    contain: strict;
+  }
+
+  /* Reduce compositing overhead */
+  #home canvas {
+    will-change: auto;
   }
 }
